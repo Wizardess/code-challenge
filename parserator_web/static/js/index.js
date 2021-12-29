@@ -19,10 +19,14 @@ $('form').on('submit', function (event) {
        */
 
       // Catch empty inputs or inputs consisting of only spaces
-       if ($('#address:text').val().trim() == '') {
+      if ($('#address:text').val().trim() == '') {
+        
+        // Add extra error info
+        $('#error-info').html("It looks like nothing was typed in the address form. \
+                              Try typing an address, such as '123 Main St. Suite 100\
+                              , Chicago, Il', into the form and press the Parse! button.")
         
         // Make sure error message is visible
-        $('#error-message').html("That doesn't look like an address.")
         $('#error-message').show()
 
         // Make sure address component table is hidden
@@ -58,11 +62,16 @@ $('form').on('submit', function (event) {
       $('#parse-type').html(address_type)
     },
     statusCode: {
-      400: function () {
+      400: function (response) {
       /** Catch exceptions stemming from usaddress parseError */
 
+        // Extract error message from GET response object
+        var error_message = response.responseJSON.error_message
+
+        // Display the error message from the API
+        $('#error-info').html(error_message)
+
         // Make sure the error message is visible
-        $('#error-message').html("Uh oh! That doesn't seem to be a valid address.")
         $('#error-message').show()
 
         // Make sure the address component table is hidden

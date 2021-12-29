@@ -41,7 +41,7 @@ class AddressParse(APIView):
                 'input_string': input_string,
                 'address_components': '',
                 'address_type': 'Invalid',
-                'error_message': str(e)},  # Currently not used.
+                'error_message': str(e)}, 
                 status=status.HTTP_400_BAD_REQUEST)
 
     def parse(self, address):
