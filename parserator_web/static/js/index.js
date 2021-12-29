@@ -5,11 +5,6 @@ $('form').on('submit', function (event) {
   // Prevent the page from reloading
   event.preventDefault()
 
-  // Clear data from previous queries from the page
-  $('tbody').html('')
-  $('#address-results').hide()
-  $('#error-message').hide()
-
   // Load form data into userInput as a JSON object
   var userInput = $('form').serializeArray()
 
@@ -25,8 +20,13 @@ $('form').on('submit', function (event) {
 
       // Catch empty inputs or inputs consisting of only spaces
        if ($('#address:text').val().trim() == '') {
+        
+        // Make sure error message is visible
         $('#error-message').html("That doesn't look like an address.")
         $('#error-message').show()
+
+        // Make sure address component table is hidden
+        $('#address-results').hide()
         return false
       }
     },
@@ -39,13 +39,19 @@ $('form').on('submit', function (event) {
       // pytest Does Not Like this syntax, but from what I can tell it's okay.
       var {address_components,address_type} = response
 
+      // Make sure the error message is hidden
+      $('#error-message').hide()
+
+      // Clear data from previous queries from the component table
+      $('tbody').html('')
+
       /* Fill the address component table: For each address component,
       append a row to the table with the component and its tag. */
       $.each(address_components, function (tag, component) {
         $('tbody').append('<tr><td>'+component+'</td><td>'+tag+'</td></tr>')
       })
 
-      // Show filled address component table
+      // Make sure the address component table is visible
       $('#address-results').show()
 
       // Display address type in parse-type
@@ -55,11 +61,12 @@ $('form').on('submit', function (event) {
       400: function () {
       /** Catch exceptions stemming from usaddress parseError */
 
-        // Show error message in the error message div
+        // Make sure the error message is visible
         $('#error-message').html("Uh oh! That doesn't seem to be a valid address.")
-
-        // Hide the address component table
         $('#error-message').show()
+
+        // Make sure the address component table is hidden
+        $('#address-results').hide()
       }
     }
   })
