@@ -13,19 +13,23 @@ $('form').on('submit', function (event) {
   // Load form data into userInput as a JSON object
   var userInput = $('form').serializeArray()
 
-  // * WIP: Catch obviously bad inputs clientside
-  // if ($('#address').val == ''){
-  //    console.log('found it')
-  //    $('#error-message').html("Please no.")
-  //    $('#error-message').show()
-  //    return false;
-  // }
-
   // GET request to parserator API
   $.ajax({
     method: 'GET',
     url: '/api/parse/',
     data: userInput,
+    beforeSend: function () {
+      /**
+       * Catch obviously bad inputs clientside.
+       */
+
+      // Catch empty inputs or inputs consisting of only spaces
+       if ($('#address:text').val().trim() == '') {
+        $('#error-message').html("That doesn't look like an address.")
+        $('#error-message').show()
+        return false
+      }
+    },
     success: function (response) {
       /**
        * Display address components, their respective tags, and
