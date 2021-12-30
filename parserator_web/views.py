@@ -35,14 +35,10 @@ class AddressParse(APIView):
 
         except Exception as e:
 
-            # Return the expected dictionary object, but include error info
-            # and set HTTP status to 400
-            return Response({
-                'input_string': input_string,
-                'address_components': '',
-                'address_type': 'Invalid',
-                'error_message': str(e)}, 
-                status=status.HTTP_400_BAD_REQUEST)
+            # Return the expected dictionary object, including error info
+            # and setting HTTP status to 400
+
+            return self.handle_exception(e, input_string)
 
     def parse(self, address):
         """Returns parsed components and address type of a given address
@@ -53,3 +49,14 @@ class AddressParse(APIView):
 
         # Return address_components as OrderedDict and address_type as Str
         return address_components, address_type
+
+    def handle_exception(self, exc, input_string):
+        """Handles ParseError exceptions stemming from invalid address
+        type"""
+
+        return Response({
+                'input_string': input_string,
+                'address_components': '',
+                'address_type': 'Invalid',
+                'error_message': str(exc)}, 
+                status=status.HTTP_400_BAD_REQUEST)
